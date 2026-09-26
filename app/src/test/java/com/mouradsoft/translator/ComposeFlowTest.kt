@@ -51,6 +51,15 @@ class ComposeFlowTest {
         click(R.string.finish); compose.onNodeWithText(text(R.string.demo_compromise_translation)).assertExists()
     }
 
+    @Test fun keyboardTextInputIsKeptInTheMessageField() {
+        enter()
+        val field = compose.onNode(hasSetTextAction())
+        field.performScrollTo().performClick().performTextInput("I am cooked")
+        field.assertTextContains("I am cooked")
+        compose.onNodeWithText("11 / 1,000").assertExists()
+        compose.onNodeWithText(text(R.string.translate)).assertIsEnabled()
+    }
+
     @Test fun demoUnknownAndClarificationStayOnInput() {
         enter()
         compose.onNode(hasSetTextAction()).performTextReplacement("An unsupported sample")

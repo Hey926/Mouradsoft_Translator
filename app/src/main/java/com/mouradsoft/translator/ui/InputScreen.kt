@@ -22,6 +22,8 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -156,12 +158,16 @@ fun InputScreen(state: SessionState, viewModel: SessionViewModel) {
             }
         }
         Column(verticalArrangement = Arrangement.spacedBy(Space.xs)) {
-            OutlinedTextField(value = state.input, onValueChange = { cancelSpeech(); viewModel.edit(it) },
+            OutlinedTextField(value = state.input, onValueChange = {
+                if (state.work is Work.Listening) cancelSpeech()
+                viewModel.edit(it)
+            },
                 modifier = Modifier.fillMaxWidth(), minLines = 4, maxLines = 8,
                 enabled = !working, shape = Corners.medium,
                 label = { Text(stringResource(R.string.message_label)) },
                 placeholder = { Text(stringResource(R.string.message_hint)) },
-                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text,
+                    capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Default),
                 textStyle = MaterialTheme.typography.bodyLarge,
                 supportingText = { Text(stringResource(R.string.counter, state.input.length), Modifier.fillMaxWidth(), textAlign = androidx.compose.ui.text.style.TextAlign.End) },
                 colors = OutlinedTextFieldDefaults.colors(unfocusedContainerColor = androidx.compose.ui.graphics.Color.White,
